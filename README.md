@@ -95,10 +95,26 @@ The goal of the Lexer is to take source code as input and output the Tokens
 
 We initialize the lexer with our source code and then repeatedly call NextToken() on it to go through the source code, token by token, character by character.
 
-
-
-
-
 ### Extending Token Set and Lexer
+
+Now we will add functionality for: ==, !, !=, -, /, *, <, >, true, false, if, else, return
+
+Add these characters to the test file for testing functionality
+
+```
+!-/*5;
+5 < 10 > 5;
+```
+
+NOTE: the lexer's job is **NOT** to tell us if the code makes sense, works or contains errors.  It is simply to recognize valid alphanumeric inputs and turn them into Tokens.
+
+It is a good practice in testing to cover:
+- all tokens 
+- produce off-by-one errors
+- edge cases at end-of-file
+- newline handling
+- multi-digit number parsing
+- etc.
+
 ### Start of a REPL
 
