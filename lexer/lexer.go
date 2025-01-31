@@ -23,11 +23,6 @@ func (l *Lexer) readChar() {
 	}
 	l.position = l.readPosition
 	l.readPosition += 1
-
-	// Note we need to add functionality that
-	// 1 - check if current char is a letter or number
-	// 2 - if a letter, continue reading until the next non-letter value
-	// 3 - determine if the final string is an "identifier" or a "keyword" (i.e. 'fn')
 }
 
 func (l *Lexer) peekChar() byte {
