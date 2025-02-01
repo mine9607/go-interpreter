@@ -237,3 +237,91 @@ In others, function literals can only be a part of a function declaration statem
 Note: the Object of this parser is to repeatedly advance the tokens and check the current token to decide what to do next.
 
 It will either call another parsing function or throw an error.
+
+In summary: when parsing statements we process tokens from left to right, expect or rejct the next tokens and if everything fits we return an AST Node
+
+### Parsing Expressions
+
+Parsing expressions is more challenging.
+
+#### Operator Precedence
+
+`5 * 5 + 10` for this expression the AST should represent something like `((5 *5) + 10)`
+
+So multiplication should take precedence over addition
+
+Similarly the parser must understand that in `5*(5+10)` the addition should take precedence
+
+So parenthesis have a higher precedence than multiplication which has a higher precedence than addition
+
+#### Reoccurring Tokens
+
+In expressions, tokens of the same type can appear in multiple positions
+
+Also in the expression `5 * (add(2,3) + 10)` the outer parenthesis indicate a grouped expression but the inner parenthesis represent a "call expression"
+
+So now, the token's position depends on the context, the tokens before and after and their precedence
+
+#### Expressions in Monkey
+
+Aside from 'let' and 'return' everything is an expression
+
+It has expressions with prefix operators:
+
+```go
+-5
+!true
+!false
+```
+
+Infix operators (binary operators):
+
+```go
+5 + 5
+5 - 5
+5 / 5
+5 * 5
+5 ** 5
+```
+
+Comparison operators:
+
+```go
+foo == bar
+foo != bar
+foo < bar
+foo > bar
+```
+
+Parenthesis groups:
+
+```go
+5 * (5 + 5)
+((5 + 5) * 5) * 5
+```
+
+Call expressions:
+
+```go
+add(2,3)
+add(add(2,3), add(5,10))
+max(5, add(5, (5 * 5)))
+```
+Identifiers as expressions:
+
+```go
+foo * bar / foobar
+add(foo, bar)
+```
+#### Terminology
+
+**prefix operator** is an operator "in front of" its operand `--5`
+
+Here the operator `--` (decrement), the operand is the integer literal 5 and the operator is in the prefix position
+
+**postix operator** is an operator "after" its operand `foobar++`
+
+> Note the Monkey language doesn't include postfix operators for simplicity.  Consider adding.
+
+**infix operator** is an operator that sits between its operands `5 * 8`
+
