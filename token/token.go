@@ -20,6 +20,7 @@ const (
 
 	EQ     = "=="
 	NOT_EQ = "!="
+	EXP    = "**"
 
 	LT = "<"
 	GT = ">"
