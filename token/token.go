@@ -21,6 +21,8 @@ const (
 	EQ     = "=="
 	NOT_EQ = "!="
 	EXP    = "**"
+	INCR   = "++"
+	DECR   = "--"
 
 	LT = "<"
 	GT = ">"
