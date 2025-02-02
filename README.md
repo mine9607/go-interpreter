@@ -325,3 +325,34 @@ Here the operator `--` (decrement), the operand is the integer literal 5 and the
 
 **infix operator** is an operator that sits between its operands `5 * 8`
 
+#### Implementing a Pratt Parser
+
+**Identifiers**
+
+Examples of identifiers:
+
+```go
+add(foobar, barfoo);
+foobar + barfoo;
+if (foobar) {
+  //[...]
+}
+```
+
+above we have:
+
+- identifiers as arguments
+- identifiers as operands in an infix expression
+- identifiers as a standalone expression as part of a conditional
+
+Identifiers are EXPRESSIONS and they produce a VALUE - they evaluate to the VALUE they are bound to
+
+#### Integer Literals
+
+Integer literals are expressions which represent themselves `5` 
+
+Any other expression could be substituted for an integer literal and it would still be a valid expression
+
+ALL expression types are interchangeable and integer literals are one of them.
+
+
