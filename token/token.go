@@ -18,11 +18,11 @@ const (
 	STAR   = "*"
 	SLASH  = "/"
 
-	EQ     = "=="
-	NOT_EQ = "!="
-	EXP    = "**"
-	INCR   = "++"
-	DECR   = "--"
+	EQ           = "=="
+	NOT_EQ       = "!="
+	EXP          = "**"
+	ADD_ASSIGN   = "+="
+	MINUS_ASSIGN = "-="
 
 	LT = "<"
 	GT = ">"

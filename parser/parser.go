@@ -47,6 +47,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
+	p.registerPrefix(token.ADD_ASSIGN, p.parsePrefixExpression)
+	p.registerPrefix(token.MINUS_ASSIGN, p.parsePrefixExpression)
 
 	// read two tokens, so curToken and peekToken are both set
 	p.nextToken()
@@ -64,7 +66,7 @@ func (p *Parser) Errors() []string {
 }
 
 func (p *Parser) peekError(t token.TokenType) {
-	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
+	msg := fmt.Sprintf("expected next token to be %s, got %s insted", t, p.peekToken.Type)
 	p.errors = append(p.errors, msg)
 }
 

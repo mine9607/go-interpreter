@@ -355,4 +355,34 @@ Any other expression could be substituted for an integer literal and it would st
 
 ALL expression types are interchangeable and integer literals are one of them.
 
+#### Prefix Operators
+
+Monkey has two prefix operators `!` and `-`
+
+Examples:
+```go
+-5;
+!foobar;
+5 + -10;
+```
+
+The structure of their usage is:
+
+`<prefix operator><expression>;`
+
+ANY expression can follow a prefix operator as an operand
+
+an AST node for a prefix operator expression must be flexible enough to point to any expression as its operand
+
+#### Infix Operators
+
+Monkey has the following infix operators: `+`, `-`, `*`, `/`, `>`, `<`, `==`, `!=`
+
+I have extended it to include: `**`
+
+NOTE: `++` and `--` can only be prefix or postfix operators
+
+The strucutre of their usage is:
+
+`<expression><infix operator><expression>`
 
