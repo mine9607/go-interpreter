@@ -8,16 +8,36 @@ import (
 	"strconv"
 )
 
+// define precedences
+
+var precedences = map[token.TokenType]int{
+	token.EQ:           EQUALS,
+	token.NOT_EQ:       EQUALS,
+	token.LT:           LESSGREATER,
+	token.GT:           LESSGREATER,
+	token.PLUS:         SUM,
+	token.MINUS:        SUM,
+	token.INCR:         SUM, // ++x
+	token.DECR:         SUM, // --x
+	token.SLASH:        PRODUCT,
+	token.STAR:         PRODUCT,
+	token.EXP:          EXPONENT,
+	token.ADD_ASSIGN:   ASSIGN, // x += 2
+	token.MINUS_ASSIGN: ASSIGN, // x -= 2
+}
+
 // Setting const to use for Operator Precedence: Remember PEMDAS
 
 const (
 	_ int = iota
 	LOWEST
-	EQUALS      // ==
+	ASSIGN      // = or += or -=
+	EQUALS      // == or !=
 	LESSGREATER // > or <
-	SUM         // +
-	PRODUCT     // *
-	PREFIX      // -X or !X
+	SUM         // + or - or ++x or --x
+	PRODUCT     // * or /
+	EXPONENT    // **
+	PREFIX      // -X or !X or ++X or --X
 	CALL        // myFunction(X)
 )
 
@@ -47,13 +67,25 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
-	p.registerPrefix(token.ADD_ASSIGN, p.parsePrefixExpression)
-	p.registerPrefix(token.MINUS_ASSIGN, p.parsePrefixExpression)
+	p.registerPrefix(token.INCR, p.parsePrefixExpression)
+	p.registerPrefix(token.DECR, p.parsePrefixExpression)
+
+	p.infixParseFns = make(map[token.TokenType]infixParseFn)
+	p.registerInfix(token.PLUS, p.parseInfixExpression)
+	p.registerInfix(token.MINUS, p.parseInfixExpression)
+	p.registerInfix(token.SLASH, p.parseInfixExpression)
+	p.registerInfix(token.STAR, p.parseInfixExpression)
+	p.registerInfix(token.EQ, p.parseInfixExpression)
+	p.registerInfix(token.NOT_EQ, p.parseInfixExpression)
+	p.registerInfix(token.LT, p.parseInfixExpression)
+	p.registerInfix(token.GT, p.parseInfixExpression)
+	p.registerInfix(token.EXP, p.parseInfixExpression)
+	p.registerInfix(token.ADD_ASSIGN, p.parseInfixExpression)
+	p.registerInfix(token.MINUS_ASSIGN, p.parseInfixExpression)
 
 	// read two tokens, so curToken and peekToken are both set
 	p.nextToken()
 	p.nextToken()
-
 	return p
 }
 
@@ -207,7 +239,18 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	}
 	leftExp := prefix()
 
+	for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
+		infix := p.infixParseFns[p.peekToken.Type]
+		if infix == nil {
+			return leftExp
+		}
+
+		p.nextToken()
+
+		leftExp = infix(leftExp)
+	}
 	return leftExp
+
 }
 
 func (p *Parser) parseIntegerLiteral() ast.Expression {
@@ -231,9 +274,44 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 		Operator: p.curToken.Literal,
 	}
 
+	// WARNING: LANG only supports ! and -
+
+	// NOTE: we may run into trouble here since we have some double token prefix tokens (++, --, +=, -=)
+	// We may need additional  logic to call p.nextToken() a second time or implement a peek variable
+	// to determine if we need to call p.nextToken once or twice to read the expression
 	p.nextToken()
 
 	expression.Right = p.parseExpression(PREFIX)
+
+	return expression
+}
+
+// returns the precedence associated with the token type of p.peekToken
+// if it doesn't find a precedence for p.peekToken it defaults to LOWEST
+func (p *Parser) peekPrecedence() int {
+	if p, ok := precedences[p.peekToken.Type]; ok {
+		return p
+	}
+	return LOWEST
+}
+
+func (p *Parser) curPrecedence() int {
+	if p, ok := precedences[p.curToken.Type]; ok {
+		return p
+	}
+	return LOWEST
+}
+
+func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	expression := &ast.InfixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+		Left:     left,
+	}
+
+	precedence := p.curPrecedence()
+	p.nextToken() // NOTE: need logic here for case of +=, -= and **
+	expression.Right = p.parseExpression(precedence)
 
 	return expression
 }

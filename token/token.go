@@ -24,6 +24,9 @@ const (
 	ADD_ASSIGN   = "+="
 	MINUS_ASSIGN = "-="
 
+	INCR = "++"
+	DECR = "--"
+
 	LT = "<"
 	GT = ">"
 
