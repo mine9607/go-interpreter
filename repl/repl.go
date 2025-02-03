@@ -10,6 +10,19 @@ import (
 
 const PROMPT = ">> "
 
+const MONKEY_FACE = `            __,__
+   .--.  .-"     "-.  .--.
+  / .. \/  .-. .-.  \/ .. \
+ | |  '|  /   Y   \  |'  | |
+ | \   \  \ 0 | 0 /  /   / |
+  \ '- ,\.-"""""""-./, -' /
+   ''-' /_   ^ ^   _\ '-''
+       |  \._   _./  |
+       \   \ '~' /   /
+        '._ '-=-' _.'
+           '-----'
+`
+
 // NOTE: to exit the REPL use <CTRL + D> or <CTRL + Z>
 
 func Start(in io.Reader, out io.Writer) {
