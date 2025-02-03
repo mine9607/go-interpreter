@@ -4,13 +4,14 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"monkey/evaluator"
 	"monkey/lexer"
 	"monkey/parser"
 )
 
 const PROMPT = ">> "
 
-const LLAMA rune = '\U0001F999'
+const LLAMA = string('\U0001F999')
 
 const EYE rune = '◕'
 
@@ -49,17 +50,29 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		io.WriteString(out, program.String())
-		io.WriteString(out, "\n")
+		evaluated := evaluator.Eval(program)
+		if evaluated != nil {
+			io.WriteString(out, evaluated.Inspect())
+			io.WriteString(out, "\n")
+
+		}
 	}
 }
 
 func printParserErrors(out io.Writer, errors []string) {
-	io.WriteString(out, MONKEY_FACE)
+	//io.WriteString(out, MONKEY_FACE)
+	io.WriteString(out, "\n"+string(LLAMA))
 	io.WriteString(out, string(LLAMA))
-	io.WriteString(out, string(EYE))
-	io.WriteString(out, "Woops! We ran into some monkey business here!\n")
-	io.WriteString(out, " parser errors:\n")
+	io.WriteString(out, string(LLAMA))
+	io.WriteString(out, string(LLAMA))
+	io.WriteString(out, string(LLAMA))
+	io.WriteString(out, "Woops! We ran into some monkey business here!")
+	io.WriteString(out, string(LLAMA))
+	io.WriteString(out, string(LLAMA))
+	io.WriteString(out, string(LLAMA))
+	io.WriteString(out, string(LLAMA))
+	io.WriteString(out, string(LLAMA)+"\n")
+	io.WriteString(out, "\nParser Errors:\n")
 	for _, msg := range errors {
 		io.WriteString(out, "\t"+msg+"\n")
 	}
