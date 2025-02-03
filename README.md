@@ -386,3 +386,53 @@ The strucutre of their usage is:
 
 `<expression><infix operator><expression>`
 
+### Extending The Parser
+
+## Evaluation
+
+This is where we need to add meaning to the Parsed AST
+
+The evaluation is where most interpreters differ most
+
+Strategies:
+
+- Traverse the AST, visit each node and do what the node signifies - on the fly ("tree walking interpreters")
+- Traverse the AST, convert to bytecode (intermediate representation IR)
+- (Misc) - Another version of an interpreter emits bytecode by the Parser and skips AST generation
+
+
+We will build an "on the fly" AST Tree Walking Interpreter for simplicity, ease of comprehension and extendability
+
+- No preprocessing or compilation
+
+We need two things:
+
+1. A tree-walking evaluator
+2. a way to represent Monkey values in the host language GO
+
+The pseudo-code will look like:
+```go
+function eval(astNode) {
+    if(astNode is integerLiteral) {
+        return astNode.integerValue
+    
+
+    } else if (astNode is booleanLiteral) {
+        return astNode.booleanValue
+    
+    } else if (astNode is infixExpression) {
+
+        leftEvaluated = eval(astNode.Left)
+        rightEvaluated = eval(astNode.Right)
+
+        if astNode.Operator == "+" {
+            return leftEvaluated + rightEvaluated
+        } else if ast.Operator == "-" {
+            return leftEvaluated - rightEvaluated
+        }
+    }
+}
+```
+
+
+
