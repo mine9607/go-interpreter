@@ -2,6 +2,27 @@ package object
 
 import "fmt"
 
+type Environment struct {
+	store map[string]Object
+}
+
+// Instantiate an Environment which wraps a "store" map
+func NewEnvironment() *Environment {
+	s := make(map[string]Object)
+	return &Environment{store: s}
+}
+
+// Define Getter and Setter methods
+func (e *Environment) Get(name string) (Object, bool) {
+	obj, ok := e.store[name]
+	return obj, ok
+}
+
+func (e *Environment) Set(name string, val Object) Object {
+	e.store[name] = val
+	return val
+}
+
 type ObjectType string
 
 const (
